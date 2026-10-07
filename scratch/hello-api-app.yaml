@@ -1,0 +1,11 @@
+# SCAFFOLD: intentionally incomplete (chapter 04). Finish the spec, push, then kubectl apply it on the hub.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-api-scratch
+  namespace: argocd
+spec:
+  project: default
+  # TODO(ch04): source - where does the desired state live? (repo URL, revision, path)
+  # TODO(ch04): destination - where should it run? (this hub cluster, which namespace)
+  # TODO(ch04): syncPolicy - when Git changes or the cluster drifts, what should Argo CD do?

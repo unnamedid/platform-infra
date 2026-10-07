@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps-dev
+  namespace: argocd
+spec:
+  description: Application workloads running on the dev cluster
+  sourceRepos:
+    - https://github.com/unnamedid/platform-gitops.git
+  destinations:
+    - name: dev
+      namespace: '*'
+  clusterResourceWhitelist: []
+  namespaceResourceBlacklist:
+    - group: ''
+      kind: ResourceQuota
+    - group: ''
+      kind: LimitRange
