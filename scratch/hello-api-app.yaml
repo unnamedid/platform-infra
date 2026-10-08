@@ -9,3 +9,29 @@ spec:
   # TODO(ch04): source - where does the desired state live? (repo URL, revision, path)
   # TODO(ch04): destination - where should it run? (this hub cluster, which namespace)
   # TODO(ch04): syncPolicy - when Git changes or the cluster drifts, what should Argo CD do?
+  source:
+    repoURL: https://github.com/unnamedid/platform-gitops.git
+    targetRevision: main
+    path: charts/wab-backend
+    helm:
+      valueFiles:
+        - values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: wa-connect
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
