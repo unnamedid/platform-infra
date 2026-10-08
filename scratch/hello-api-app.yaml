@@ -12,14 +12,11 @@ spec:
   source:
     repoURL: https://github.com/unnamedid/platform-gitops.git
     targetRevision: main
-    path: charts/wab-backend
-    helm:
-      valueFiles:
-        - values.yaml
+    path: scratch/hello-api
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: wa-connect
+    namespace: hello-api
 
   syncPolicy:
     automated:
