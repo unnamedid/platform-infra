@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/unnamedid/platform-infra.git
     targetRevision: HEAD
-    path: project
+    path: projects
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
