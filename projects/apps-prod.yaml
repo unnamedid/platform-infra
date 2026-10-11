@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps-prod
+  namespace: argocd
+spec:
+  description: Application workloads running on the prod cluster
+  sourceRepos:
+    - https://github.com/unnamedid/platform-gitops.git
+  destinations:
+    - name: prod
+      namespace: '*'
+  clusterResourceWhitelist: []
+  namespaceResourceBlacklist:
+    - group: ''
+      kind: ResourceQuota
+    - group: ''
+      kind: LimitRange
