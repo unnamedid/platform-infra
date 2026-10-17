@@ -1,4 +1,3 @@
-# SCAFFOLD: intentionally insecure (chapter 08). Replace the cluster-admin binding with least privilege.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -14,17 +13,45 @@ metadata:
     kubernetes.io/service-account.name: argocd-manager
 type: kubernetes.io/service-account-token
 ---
-# TODO(ch08): this hands the hub cluster-admin on the spoke. Argo CD only needs to manage workloads in
-# the namespaces listed in namespaces.yaml. Replace this binding with a Role + RoleBinding per namespace.
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: Role
+metadata:
+  namespace: hello-api
+  name: argocd-manager
+rules:
+  - apiGroups: [""]
+    resources: ["services", "serviceaccounts", "configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # apps – the Deployment
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "events"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
   name: argocd-manager
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
+  namespace: hello-api
 subjects:
-  - kind: ServiceAccount
-    name: argocd-manager
-    namespace: kube-system
+- kind: ServiceAccount
+  name: argocd-manager
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: argocd-manager
+  apiGroup: rbac.authorization.k8s.io
